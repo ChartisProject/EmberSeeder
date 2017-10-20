@@ -1904,6 +1904,14 @@ func (p *Peer) AssociateConnection(conn net.Conn) {
 		p.na = na
 	}
 
+        ver_m, err := p.localVersionMsg()
+        if err != nil {
+		log.Errorf("Problem constructing version message for new node")
+                p.Disconnect()
+                return
+        }
+        p.QueueMessage(ver_m, nil)
+
 	go func() {
 		if err := p.start(); err != nil {
 			log.Debugf("Cannot start peer %v: %v", p, err)
